@@ -1,0 +1,32 @@
+# Template file for 'dwl'
+pkgname=dwl
+version=0.7
+revision=1
+depends="wlroots0.18 libinput wayland libxkbcommon xorg-server-xwayland libxcb xcb-util-wm"
+makedepends="pkg-config wayland-protocols wlroots0.18-devel libinput-devel wayland-devel libxkbcommon-devel libxcb-devel xcb-util-wm-devel"
+short_desc="dwm for Wayland"
+maintainer="Wensday <wensday161@gmail.com>"
+license="MIT"
+homepage="https://codeberg.org/dwl/dwl"
+distfiles="https://codeberg.org/dwl/dwl/releases/download/v${version}/dwl-v${version}.tar.gz"
+checksum=16e1412385f5fecaea997f734cb290f2bc412929da5b523c7c5180c6bd9402ea
+
+do_configure(){
+	sed -i 's/PREFIX = \/usr\/local/PREFIX = \/usr/g' config.mk
+	sed -i 's/#XWAYLAND/XWAYLAND/g' config.mk
+	sed -i 's/#XLIBS/XLIBS/g' config.mk
+
+	if [ -f "$FILESDIR"/config.h ]; then
+		cp "$FILESDIR"/config.h ./config.h
+	else
+		cp ./config.def.h "$FILESDIR"/config.h
+	fi
+}
+
+do_build(){
+	make
+}
+
+do_install(){
+	make DESTDIR="$DESTDIR" install
+}
